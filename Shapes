@@ -1,0 +1,101 @@
+using UnityEngine;
+using Zenject;
+
+public class ShapePointCalculator 
+{
+    public Vector2[] CalculateCirclePoints(int numPoints, float radius)
+    {
+        Vector2[] points = new Vector2[numPoints];
+
+        for (int i = 0; i < numPoints; i++)
+        {
+            float angle = i * Mathf.PI * 2f / numPoints;
+            float x = Mathf.Cos(angle) * radius;
+            float y = Mathf.Sin(angle) * radius;
+            points[i] = new Vector2(x, y);
+        }
+
+        return points;
+    }
+        
+    public Vector2[] CalculateSquarePoints(float width, int numPoints)
+    {
+        Vector2[] points = new Vector2[numPoints * 4];
+
+        float halfWidth = width / 2f;
+        Vector2[] corners = new Vector2[4];
+        corners[0] = new Vector2(-halfWidth, -halfWidth);
+        corners[1] = new Vector2(halfWidth, -halfWidth);
+        corners[2] = new Vector2(halfWidth, halfWidth);
+        corners[3] = new Vector2(-halfWidth, halfWidth);
+
+        for (int i = 0; i < 4; i++)
+        {
+            Vector2 start = corners[i];
+            Vector2 end = corners[(i + 1) % 4];
+
+            for (int j = 0; j < numPoints; j++)
+            {
+                float t = (float)j / (numPoints - 1);
+                Vector2 point = Vector2.Lerp(start, end, t);
+                points[i * numPoints + j] = point;
+            }
+        }
+
+        return points;
+    }
+    
+    public Vector2[] CalculateTrianglePoints(float width, int numPoints)
+    {
+        Vector2[] points = new Vector2[numPoints * 3];
+
+        float halfWidth = width / 2f;
+        Vector2[] vertices = new Vector2[3];
+        vertices[0] = new Vector2(-halfWidth, -halfWidth);
+        vertices[1] = new Vector2(halfWidth, -halfWidth);
+        vertices[2] = new Vector2(0f, halfWidth);
+
+        for (int i = 0; i < 3; i++)
+        {
+            Vector2 start = vertices[i];
+            Vector2 end = vertices[(i + 1) % 3];
+
+            for (int j = 0; j < numPoints; j++)
+            {
+                float t = (float)j / (numPoints - 1);
+                Vector2 point = Vector2.Lerp(start, end, t);
+                points[i * numPoints + j] = point;
+            }
+        }
+
+        return points;
+    }
+    
+    public Vector2[] CalculateHexagonPoints(float radius, int numPoints)
+    {
+        Vector2[] points = new Vector2[numPoints * 6];
+
+        Vector2[] vertices = new Vector2[6];
+        for (int i = 0; i < 6; i++)
+        {
+            float angle = (60f * i) * Mathf.Deg2Rad;
+            vertices[i] = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+        }
+
+        for (int i = 0; i < 6; i++)
+        {
+            Vector2 start = vertices[i];
+            Vector2 end = vertices[(i + 1) % 6];
+
+            for (int j = 0; j < numPoints; j++)
+            {
+                float t = (float)j / (numPoints - 1);
+                Vector2 point = Vector2.Lerp(start, end, t);
+                points[i * numPoints + j] = point;
+            }
+        }
+
+        return points;
+    }
+
+}
